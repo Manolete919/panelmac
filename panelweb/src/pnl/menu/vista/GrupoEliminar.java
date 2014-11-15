@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
@@ -79,8 +80,10 @@ public class GrupoEliminar implements Serializable {
 
 
 
-	public void addMessage(String summary) {
-		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+
+	
+	public void addMessage(String summary,Severity severity) {
+		FacesMessage message = new FacesMessage(severity,
 				summary, null);
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
@@ -93,15 +96,15 @@ public class GrupoEliminar implements Serializable {
 				
 				usuarioGrupoBeanRemote.removeUsuarioGrupos(selectedGrupos);
 				
-				addMessage("Se eliminaron exitosamente!!");
+				addMessage("Se eliminaron exitosamente!!",FacesMessage.SEVERITY_INFO);
 				usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioEstado(usuario.getIdUsuario(),null);
 				menuVista.actualizarMenu();
 			} catch (Exception e) {
-				addMessage("Ocurrio algun error!");
+				addMessage("Ocurrio algun error!",FacesMessage.SEVERITY_ERROR);
 			}
 
 		} else {
-			addMessage("NO TIENE PERMISO PARA REALIZAR ESTA ACCION!!");
+			addMessage("NO TIENE PERMISO PARA REALIZAR ESTA ACCION!!",FacesMessage.SEVERITY_WARN);
 		}
 
 	}

@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -97,11 +99,11 @@ public class FiltrosConfiguracion implements Serializable{
 			
 			filtroBeanRemote.mergeFiltros(filtros);
 			
-			addMessage("Los datos fueron actualizados");
+			addMessage("Los datos fueron actualizados",FacesMessage.SEVERITY_INFO);
 					
 		
 		} catch (Exception e) {
-			addMessage("Hubo algun error");
+			addMessage("Hubo algun error",FacesMessage.SEVERITY_ERROR);
 			e.printStackTrace();
 		}
 		
@@ -135,10 +137,13 @@ public class FiltrosConfiguracion implements Serializable{
 		
 	}
 	
-    public void addMessage(String summary) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
-        FacesContext.getCurrentInstance().addMessage(null, message);
-    }
+
+    
+	public void addMessage(String summary,Severity severity) {
+		FacesMessage message = new FacesMessage(severity,
+				summary, null);
+		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
 
 	public void setUsuarioServicio(UsuarioServicio usuarioServicio) {
 		this.usuarioServicio = usuarioServicio;

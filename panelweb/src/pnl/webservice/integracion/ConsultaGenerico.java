@@ -1,7 +1,7 @@
 package pnl.webservice.integracion;
 
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +18,8 @@ import pnl.wsg.ServicioElement;
 import pnl.wsg.ServicioResponseElement;
 
 
-public class ConsultaGenerico {
+public class ConsultaGenerico implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 
 
@@ -82,7 +83,7 @@ public class ConsultaGenerico {
 				MessageElement me3 = (MessageElement) it2.next();
 				int objetoY = Integer.parseInt(me3.getValue());
 				
-				//System.out.println("ÖBJETO X "+ objetoX + " OBJETO Y " + objetoY);
+				//System.out.println("ï¿½BJETO X "+ objetoX + " OBJETO Y " + objetoY);
 				listaGenerica.add(new Generico(objetoX,objetoY));
 				
 
