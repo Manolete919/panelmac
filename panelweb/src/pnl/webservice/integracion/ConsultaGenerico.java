@@ -25,14 +25,8 @@ public class ConsultaGenerico implements Serializable {
 
 
 	
-	public List<Generico> consultaDatosWsg(
-			Document documento,
-			long idServicio, String usuario, String clave) {
+	public Servicio consultarServicioWebGenerico(Document documento,long idServicio, String usuario, String clave) {
 		// TODO Auto-generated method stub
-		
-		List<Generico> listaGenerica = new ArrayList<Generico>();
-
-		
 		
 		try {
 			
@@ -50,8 +44,7 @@ public class ConsultaGenerico implements Serializable {
 			Bind sentencias_binds = new Bind();
 			MessageElement[] _any = new MessageElement[1];
 			
-			//NodeList sentenciasList = doc.getChildNodes().item(0).getChildNodes();
-			
+				
 			Element element = (Element) documento.getDocumentElement().getChildNodes().item(0);
 			_any[0] = new MessageElement(element);
 			
@@ -63,42 +56,55 @@ public class ConsultaGenerico implements Serializable {
 			
 			Servicio servicio = servicioResponseElement.getResult();
 			
-			
-		
-
-			Iterator it = servicio.get_any()[0].getChildElements();
-
-			while (it.hasNext()) {
-				MessageElement me = (MessageElement) it.next();
-				System.out.println("RAIZ = " + me.getName());
-				Iterator it2 = me.getChildElements();
-				
-				
-				
-				//it2.hasNext();
-				MessageElement me2 = (MessageElement) it2.next();
-				Object objetoX = me2.getValue();
-				
-				//it2.hasNext();
-				MessageElement me3 = (MessageElement) it2.next();
-				int objetoY = Integer.parseInt(me3.getValue());
-				
-				//System.out.println("�BJETO X "+ objetoX + " OBJETO Y " + objetoY);
-				listaGenerica.add(new Generico(objetoX,objetoY));
-				
-
-			}
+			return servicio;
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 		
-		return listaGenerica;
+		return null;
 		
 	}
-		
 	
+			
+	
+	public List<Generico> procesaDatosDeGraficos(MessageElement[] messageElements) {
+		
+		List<Generico> listaGenerica = new ArrayList<Generico>();
+		Iterator<?> it = messageElements[0].getChildElements();
+
+		while (it.hasNext()) {
+			MessageElement me = (MessageElement) it.next();
+			System.out.println("RAIZ = " + me.getName());
+			Iterator<?> it2 = me.getChildElements();
+			
+			
+			
+			//it2.hasNext();
+			MessageElement me2 = (MessageElement) it2.next();
+			Object objetoX = me2.getValue();
+			
+			//it2.hasNext();
+			MessageElement me3 = (MessageElement) it2.next();
+			int objetoY = Integer.parseInt(me3.getValue());
+			
+
+			listaGenerica.add(new Generico(objetoX,objetoY));
+			
+			
+
+		}
+		return listaGenerica;
+
+	}
+
+
+
+
+
+
 	public List<WsgServicio> consultaWsgServiciosDeUsuario(Document documento, long idServicio, String usuario, String clave) {
 		// TODO Auto-generated method stub
 		

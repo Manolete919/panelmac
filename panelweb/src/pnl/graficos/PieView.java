@@ -22,6 +22,7 @@ import pnl.modelo.IndicadorSerie;
 import pnl.webservice.integracion.ConsultaGenerico;
 import pnl.webservice.integracion.Generico;
 import pnl.webservice.integracion.Utileria;
+import pnl.wsg.Servicio;
 
 
 @ManagedBean
@@ -89,16 +90,20 @@ public class PieView implements Serializable {
 
 				List<Generico> datos = new ArrayList<Generico>();
 				datos.add(new Generico("",0));
+				Servicio servicio = null;
 				if(parametrosPropiedadValores != null ){
 					if(!parametrosPropiedadValores.isEmpty()){
 						Utileria u = new Utileria();
 						try {
-							datos = new ArrayList<Generico>();
-							System.out.print(Utileria.convertirDocumentToString(u.convertirFiltroValorEnDocument(parametrosPropiedadValores)));
-							//datos = cg.consultaDatosDelWebserice(u.convertirParametrosPropiedadValorEnDocument(parametrosPropiedadValores),dinamico.getIndicador().getIdServicio().longValue());
 							
-							System.out.println("PIE XML ENTRADA " + u.convertirDocumentToString(u.convertirFiltroValorEnDocument(parametrosPropiedadValores)));
-							datos = cg.consultaDatosWsg(u.convertirFiltroValorEnDocument(parametrosPropiedadValores),dinamico.getIndicador().getIdServicio().longValue(),dinamico.getUsuario().getIdUsuario(), dinamico.getUsuario().getClave());
+							System.out.print(Utileria.convertirDocumentToString(u.convertirFiltroValorEnDocument(parametrosPropiedadValores)));
+							servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(parametrosPropiedadValores),dinamico.getIndicador().getIdServicio().longValue(),dinamico.getUsuario().getIdUsuario(), dinamico.getUsuario().getClave());
+							if(servicio != null ){
+								if(servicio.get_any() != null ){
+									datos = new ArrayList<Generico>();
+									datos = cg.procesaDatosDeGraficos(servicio.get_any());
+								}
+							}
 
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
