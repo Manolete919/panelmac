@@ -35,12 +35,12 @@
 					<p:column>Servicio de Consulta:</p:column>
 					<p:column>
 						<p:panelGrid columns="2">
-							<p:selectOneMenu id="servicio"  required="true" requiredMessage="Seleccione un servicio" value="#{indicadorNuevo.indiceWsgServicio}"  effect="fold"
+							<p:selectOneMenu id="servicio"  required="true" requiredMessage="Seleccione un servicio" value="#{indicadorNuevo.indiceWsgServicio}"   effect="fold"
 								editable="false" >
 								<f:selectItems  value="#{indicadorNuevo.wsgServicioSelect}" />
 							</p:selectOneMenu>
 													
-							<p:commandButton id="sqlQuery" actionListener="#{indicadorNuevo.consultarSentencias}"  immediate="true" oncomplete="PF('sqlQuery').show()" update="detalleQuery"  icon="ui-icon-info" />
+							<p:commandButton id="sqlQuery"  process="servicio @this" actionListener="#{indicadorNuevo.consultarSentencias}"  oncomplete="PF('sqlQuery').show()" update="detalleQuery"  icon="ui-icon-info" />
 						
 						</p:panelGrid>
 					</p:column>
@@ -112,7 +112,7 @@
 					<p:row>
 						<p:column colspan="3">
 							<center>
-								<p:commandButton value="Guardar" ajax="false"
+								<p:commandButton id="save" value="Guardar" ajax="false"
 									update=":menuForm:lbxIndicadores msgs"
 									actionListener="#{indicadorNuevo.guardarIndicadorSerieUsuario}" />
 							</center>
