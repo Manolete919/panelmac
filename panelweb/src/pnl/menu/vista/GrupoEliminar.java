@@ -19,6 +19,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import pnl.interfaz.GrupoBeanRemote;
+import pnl.interfaz.GrupoIndicadorBeanRemote;
 import pnl.interfaz.UsuarioGrupoBeanRemote;
 import pnl.modelo.Usuario;
 import pnl.modelo.UsuarioGrupo;
@@ -34,6 +36,7 @@ public class GrupoEliminar implements Serializable {
 	private List<UsuarioGrupo> usuarioGrupos = new ArrayList<UsuarioGrupo>();
 	private List<UsuarioGrupo> selectedGrupos = new ArrayList<UsuarioGrupo>();
 	private UsuarioGrupoBeanRemote usuarioGrupoBeanRemote;
+	private GrupoBeanRemote grupoBeanRemote;
 	private Usuario usuario;
 
 	@ManagedProperty("#{usuarioServicio}")
@@ -58,13 +61,13 @@ public class GrupoEliminar implements Serializable {
 			InitialContext ic = new InitialContext(pr);
 
 
-			usuarioGrupoBeanRemote = (UsuarioGrupoBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/UsuarioGrupoBean");
+			usuarioGrupoBeanRemote = (UsuarioGrupoBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/UsuarioGrupoBean");
 			
+			grupoBeanRemote = (GrupoBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/GrupoBean");
 			
+			usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioNoOcupados(usuario.getIdUsuario());
 
-			usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioEstado(usuario.getIdUsuario(),null);
-
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,8 +97,15 @@ public class GrupoEliminar implements Serializable {
 
 			try {
 				
+				
+				
 				usuarioGrupoBeanRemote.removeUsuarioGrupos(selectedGrupos);
 				
+				//eliminar todos los grupos
+				grupoBeanRemote.removeGrupos(selectedGrupos);
+				
+				
+			
 				addMessage("Se eliminaron exitosamente!!",FacesMessage.SEVERITY_INFO);
 				usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioEstado(usuario.getIdUsuario(),null);
 				menuVista.actualizarMenu();
