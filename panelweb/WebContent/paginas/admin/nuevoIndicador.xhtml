@@ -85,12 +85,12 @@
 					</p:column>
 				</p:row>
 				<p:row>
-					<p:column>[Valor mín y máx]Y:</p:column>
+					<p:column>[Rango de altura]Y:</p:column>
 					<p:column>
-						<p:panelGrid columns="2">
-							<p:inputText size="5" value="#{indicadorNuevo.indicador.etiquetaEjey}" />
-							<p:inputText size="5" value="#{indicadorNuevo.indicador.etiquetaEjey}" />
-						</p:panelGrid>
+						<h:panelGrid columns="4">
+							valor mín:<p:inputMask  required="true" requiredMessage="Ingrese un valor minimo" size="5" value="#{indicadorNuevo.indicador.valorMiny}" mask="9?9999" maxlength="5" placeHolder=" " />
+							valor máx:<p:inputMask  size="5" requiredMessage="Ingrese un valor maximo" value="#{indicadorNuevo.indicador.valorMaxy}" mask="9?9999" maxlength="5" placeHolder=" " />
+						</h:panelGrid>
 						
 					</p:column>
 				</p:row>

@@ -94,6 +94,8 @@ public class IndicadorNuevo implements Serializable {
 		System.out.println("tema " + tema.getTema());
 
 		indicador = new Indicador();
+		indicador.setValorMiny(new BigDecimal(0));
+		indicador.setValorMaxy(new BigDecimal(300));
 		indicadorSerie = new IndicadorSerie();
 		usuario = usuarioServicio.getUsuario();
 		ConsultaGenerico cg = new ConsultaGenerico();

@@ -1,12 +1,10 @@
 package pnl.interfaz;
 
 import java.util.List;
-
 import javax.ejb.Remote;
-
 import pnl.modelo.GrupoIndicador;
 import pnl.modelo.Indicador;
-import pnl.modelo.UsuarioGrupo;
+
 
 
 /**

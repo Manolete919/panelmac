@@ -52,8 +52,8 @@ public class Indicador implements Serializable {
 	@Column(name="VALOR_MAXY")
 	private BigDecimal valorMaxy;
 
-	@Column(name="VALOR_MINX")
-	private BigDecimal valorMinx;
+	@Column(name="VALOR_MINY")
+	private BigDecimal valorMiny;
 	
 	//bi-directional many-to-one association to ModeloGrafico
 	@ManyToOne
@@ -156,13 +156,16 @@ public class Indicador implements Serializable {
 	}
 
 
-	public BigDecimal getValorMinx() {
-		return valorMinx;
+
+
+
+	public BigDecimal getValorMiny() {
+		return valorMiny;
 	}
 
 
-	public void setValorMinx(BigDecimal valorMinx) {
-		this.valorMinx = valorMinx;
+	public void setValorMiny(BigDecimal valorMiny) {
+		this.valorMiny = valorMiny;
 	}
 
 
