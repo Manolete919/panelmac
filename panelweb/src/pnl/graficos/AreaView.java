@@ -4,7 +4,6 @@ import javax.annotation.PostConstruct;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -36,9 +35,9 @@ public class AreaView implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private LineChartModel areaModel;
+	private String mensajeDeAplicacion = "";
+	private int codigoDeAplicacion = 0;
 
-	private Date date1;
-	private Date date2;
 	
 	@ManagedProperty("#{dinamico}")
 	private Dinamico dinamico;
@@ -111,8 +110,10 @@ public class AreaView implements Serializable {
 								if(servicio != null ){
 									if(servicio.get_any() != null ){
 										datos = new ArrayList<Generico>();
-										datos = cg.procesaDatosDeGraficos(servicio.get_any());
+										datos = cg.procesaDatosDeGraficos(servicio.get_any());		
 									}
+									mensajeDeAplicacion = servicio.getMensajeError();
+									codigoDeAplicacion = servicio.getCodigoError();
 								}
 
 							} catch (Exception e) {
@@ -148,32 +149,19 @@ public class AreaView implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 
-	public Date getDate1() {
-		return date1;
-	}
-
-	public void setDate1(Date date1) {
-		this.date1 = date1;
-	}
-
-	public Date getDate2() {
-		return date2;
-	}
-
-	public void setDate2(Date date2) {
-		this.date2 = date2;
-	}
-	
-
 
 	public void setDinamico(Dinamico dinamico) {
 		this.dinamico = dinamico;
 	}
 
+	public String getMensajeDeAplicacion() {
+		return mensajeDeAplicacion;
+	}
 
+	public int getCodigoDeAplicacion() {
+		return codigoDeAplicacion;
+	}
 
-
-	
 	
 	
 }

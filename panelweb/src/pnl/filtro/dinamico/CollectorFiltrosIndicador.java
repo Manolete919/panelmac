@@ -3,7 +3,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -13,7 +12,6 @@ import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpSession;
-
 import pnl.interfaz.FiltroBeanRemote;
 import pnl.interfaz.GrupoIndicadorBeanRemote;
 import pnl.modelo.Indicador;
@@ -22,7 +20,6 @@ import pnl.modelo.Filtro;
 import pnl.modelo.Usuario;
 import pnl.servicio.UsuarioServicio;
 import pnl.webservice.integracion.ConsultaGenerico;
-import pnl.webservice.integracion.Generico;
 import pnl.webservice.integracion.Utileria;
 import pnl.wsg.Servicio;
 

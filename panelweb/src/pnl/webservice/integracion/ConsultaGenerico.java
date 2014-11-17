@@ -5,11 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.axis.message.MessageElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import pnl.wsg.Bind;
 import pnl.wsg.GenericoPortType;
 import pnl.wsg.GenericoServiceLocator;
@@ -22,9 +20,6 @@ public class ConsultaGenerico implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 
-
-
-	
 	public Servicio consultarServicioWebGenerico(Document documento,long idServicio, String usuario, String clave) {
 		// TODO Auto-generated method stub
 		
@@ -76,19 +71,24 @@ public class ConsultaGenerico implements Serializable {
 		Iterator<?> it = get_any[0].getChildElements();
 
 		while (it.hasNext()) {
+			
 			MessageElement me = (MessageElement) it.next();
-			System.out.println("RAIZ = " + me.getName());
 			Iterator<?> it2 = me.getChildElements();
 			
+			Object objetoX = "";
+			int objetoY = 1;
+			//va a la siguiente columna
+			if(it2.hasNext()){
+				MessageElement me2 = (MessageElement) it2.next();
+				objetoX = me2.getValue();
+			}
 			
+			//va a la siguiente columna
+			if(it2.hasNext()){
+				MessageElement me3 = (MessageElement) it2.next();
+				objetoY = Integer.parseInt(me3.getValue());
+			}
 			
-			//it2.hasNext();
-			MessageElement me2 = (MessageElement) it2.next();
-			Object objetoX = me2.getValue();
-			
-			//it2.hasNext();
-			MessageElement me3 = (MessageElement) it2.next();
-			int objetoY = Integer.parseInt(me3.getValue());
 			
 
 			listaGenerica.add(new Generico(objetoX,objetoY));
