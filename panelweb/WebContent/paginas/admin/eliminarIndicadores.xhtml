@@ -13,27 +13,39 @@
 		<p:panelGrid style="margin-top:20px">
 			<f:facet name="header">
 				<p:row>
-					<p:column>Borrado de Indicadoredores</p:column>
+					<p:column>Borrado de indicadores</p:column>
 				</p:row>
 			</f:facet>
 			<p:row>
 				<p:column>
 					<p:dataTable id="indicadoresAElminar" resizableColumns="true" value="#{indicadorEliminar.indicadores}" selection="#{indicadorEliminar.selectedIndicadores}" rowKey="#{indicador.idIndicador}"
-						style="margin:10px;" var="indicador">
+						style="margin:10px;" var="indicador" rows="5"
+							paginator="true">
 						<f:facet name="header">
-							<h:outputText value="Indicadores configurados para: #{menuVista.usuario.idUsuario}" />
+							<h:outputText value="Indicadores configurados para: #{menuVista.usuario.nombre}" />
             				
         				</f:facet>
         				<p:column selectionMode="multiple" style="text-align:center" />
         			
         				
-        				<p:column headerText="ID">
-        					<h:outputText value="#{indicador.idIndicador}" />
-        				</p:column>
         				
         				<p:column headerText="Nombre">
         					<h:outputText value="#{indicador.nombre}" />
         				</p:column>
+        				
+       				
+        				<p:column headerText="Modelo grafico">
+        					<h:outputText value="#{indicador.modeloGrafico.nombre}" />
+        				</p:column>
+        				
+				        <p:column style="width:32px;text-align: center">
+				             <p:commandButton update=":form:indicadorDetail" oncomplete="PF('indicadorDialog').show()" icon="ui-icon-search" title="View">
+				                <f:setPropertyActionListener value="#{indicador}" target="#{indicadorEliminar.selectedIndicador}" />
+				            </p:commandButton>
+				        </p:column>
+
+        				
+
         				
 	        			<f:facet name="footer">
 							<p:commandButton value="Eliminar" disabled="#{indicadorEliminar.indicadores.size() == 0}" update=":menuForm:lbxIndicadores :form:indicadoresAElminar :form:msgs"
@@ -49,6 +61,19 @@
 			</p:row>
 
 		</p:panelGrid>
+		
+		<p:dialog header=" Info: indicador" widgetVar="indicadorDialog" appendTo="@(body)" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:outputPanel id="indicadorDetail" style="text-align:center;">
+            <p:panelGrid  columns="2" rendered="#{not empty indicadorEliminar.selectedIndicador}" columnClasses="label,value">
+
+ 
+                <h:outputText value="Nombre" />
+                <h:outputText value="#{indicadorEliminar.selectedIndicador.nombre}" />
+ 
+
+            </p:panelGrid>
+        </p:outputPanel>
+    </p:dialog>
 
 	</ui:define>
 

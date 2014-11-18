@@ -29,7 +29,8 @@
 
 
 					<p:dataTable id="tabla" value="#{indicadorSerieEditar.indicadorSeries}"
-						style="margin:10px;" var="indicadorSerie">
+						style="margin:10px;" var="indicadorSerie" rows="5"
+							paginator="true">
 						
 						<p:column headerText="Nombre">
 							<p:inputText value="#{indicadorSerie.nombre}" required="true" requiredMessage="El nombre no debe estar vacio"  />

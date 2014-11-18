@@ -37,6 +37,7 @@ public class IndicadorEliminar implements Serializable {
 	private List<Indicador> selectedIndicadores = new ArrayList<Indicador>();
 	private GrupoIndicadorBeanRemote grupoIndicadorBeanRemote;
 	private IndicadorBeanRemote indicadorBeanRemote;
+	private Indicador selectedIndicador;
 	private Usuario usuario;
 
 	@ManagedProperty("#{usuarioServicio}")
@@ -158,4 +159,14 @@ public class IndicadorEliminar implements Serializable {
 		return false;
 	}
 
+	public Indicador getSelectedIndicador() {
+		return selectedIndicador;
+	}
+
+	public void setSelectedIndicador(Indicador selectedIndicador) {
+		this.selectedIndicador = selectedIndicador;
+	}
+
+	
+	
 }
