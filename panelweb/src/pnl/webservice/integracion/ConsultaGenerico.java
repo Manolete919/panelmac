@@ -5,9 +5,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.axis.message.MessageElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import pnl.wsg.Bind;
 import pnl.wsg.GenericoPortType;
 import pnl.wsg.GenericoServiceLocator;
@@ -107,26 +109,48 @@ public class ConsultaGenerico implements Serializable {
 		// TODO Auto-generated method stub
 		Iterator<?> it = get_any[0].getChildElements();
 		List<WsgServicio> wsgServicios = new ArrayList<WsgServicio>();
+		
+		boolean tieneSiguiente = it.hasNext();
+		
+		
 
-		while (it.hasNext()) {
+		while (tieneSiguiente) {
+			
+			
+			
 			MessageElement me = (MessageElement) it.next();
 			
 			Iterator<?> it2 = me.getChildElements();
 			
 			WsgServicio wsgServicio = new WsgServicio();
 			
-			//it2.hasNext();
-			MessageElement me2 = (MessageElement) it2.next();
-			wsgServicio.setIdServicio(new Long(me2.getValue()));
-			
-			//it2.hasNext();
-			MessageElement me3 = (MessageElement) it2.next();
-			wsgServicio.setDescripcion(me3.getValue());
-			
-			
-			wsgServicios.add(wsgServicio);
-			
+			try{
+				
+				if(it2.hasNext()){
+					MessageElement me2 = (MessageElement) it2.next();
+					wsgServicio.setIdServicio(new Long(me2.getValue()));
+				}
 
+				
+				if(it2.hasNext()){
+					MessageElement me3 = (MessageElement) it2.next();
+					wsgServicio.setDescripcion(me3.getValue());
+				}
+				
+				//si no hubo errores
+				wsgServicios.add(wsgServicio);
+				tieneSiguiente = it.hasNext();
+				
+			}catch(NumberFormatException nfe ){
+				tieneSiguiente = false;
+				wsgServicios = new ArrayList<WsgServicio>();
+				System.out.println("Error en conversion de numero: "+nfe.getMessage());
+			}catch(Exception e ){
+				tieneSiguiente = false;
+				wsgServicios = new ArrayList<WsgServicio>();
+				System.out.println("Error: "+e.getMessage());
+			}
+			
 		}
 		return wsgServicios;
 	}

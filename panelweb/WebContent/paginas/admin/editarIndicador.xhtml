@@ -151,10 +151,12 @@
 		</center>
 
 		<p:dialog header="Sentencia de Consulta" widgetVar="sqlQuery"
-			modal="false" showEffect="fade" hideEffect="fade" resizable="false">
-			<p:outputPanel id="detalleQuery" style="text-align:center;">
-				<h:outputText value="#{indicadorEditar.query}" style="display:block" />
+			appendTo="@(body)" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+	
+			<p:outputPanel  id="detalleQuery" style="text-align:center;">
+				<h:outputLabel value="#{indicadorEditar.query}" style="display:block" />
 			</p:outputPanel>
+		
 		</p:dialog>
 
 

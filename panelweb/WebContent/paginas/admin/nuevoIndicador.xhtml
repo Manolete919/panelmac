@@ -136,7 +136,7 @@
 		
 	
 
-	    <p:dialog header="Sentencia de consulta" widgetVar="sqlQuery" modal="false" showEffect="fade" hideEffect="fade" resizable="false">
+	    <p:dialog header="Sentencia de consulta" widgetVar="sqlQuery" appendTo="@(body)" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
 	        <p:outputPanel id="detalleQuery" style="text-align:center;">
 	     
 	        	<h:outputText value="#{indicadorNuevo.query}" style="display:block"/>
