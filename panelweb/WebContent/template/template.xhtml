@@ -36,6 +36,9 @@
 					<p:menuitem icon="ui-icon-document" value="Nuevo"
 						url="/paginas/admin/nuevoIndicador.xhtml" />
 					<p:separator />
+					<p:menuitem icon="ui-icon-search" value="Ver"
+						url="/paginas/admin/verIndicadores.xhtml" />
+					<p:separator />
 					<p:menuitem icon="ui-icon-pencil" value="Actualizar"
 						disabled="#{menuVista.indicador.idIndicador == 0}"
 						url="/paginas/admin/editarIndicador.xhtml?ind=#{menuVista.indicador.idIndicador}" />
@@ -71,9 +74,14 @@
 				<p:submenu label="Serie"
 					rendered="#{menuVista.indicador.idIndicador != 0}"
 					icon="ui-icon-grip-dotted-horizontal">
+					
 
 					<p:menuitem icon="ui-icon-document" value="Nuevo"
 						url="/paginas/admin/crearIndicadorSeries.xhtml?ind=#{menuVista.indicador.idIndicador}" />
+					<p:separator />
+					<p:menuitem icon="ui-icon-search" value="Ver"
+						url="/paginas/admin/verIndicadorSeries.xhtml?ind=#{menuVista.indicador.idIndicador}" />
+
 					<p:separator />
 					<p:menuitem icon="ui-icon-pencil" value="Actualizar"
 						url="/paginas/admin/editarIndicadorSeries.xhtml?ind=#{menuVista.indicador.idIndicador}" />
