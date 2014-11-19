@@ -144,11 +144,11 @@ public class ConsultaGenerico implements Serializable {
 			}catch(NumberFormatException nfe ){
 				tieneSiguiente = false;
 				wsgServicios = new ArrayList<WsgServicio>();
-				System.out.println("Error en conversion de numero: "+nfe.getMessage());
+				nfe.printStackTrace();
 			}catch(Exception e ){
 				tieneSiguiente = false;
 				wsgServicios = new ArrayList<WsgServicio>();
-				System.out.println("Error: "+e.getMessage());
+				e.printStackTrace();
 			}
 			
 		}
@@ -162,20 +162,20 @@ public class ConsultaGenerico implements Serializable {
 		Iterator<?> it = get_any[0].getChildElements();
 
 		String query = "";
-		while (it.hasNext()) {
-			MessageElement me = (MessageElement) it.next();
-			
-			Iterator<?> it2 = me.getChildElements();
-			
-			
-			
-			//it2.hasNext();
-			MessageElement me2 = (MessageElement) it2.next();
-			query = me2.getValue();
-			
-			
-
+		
+		MessageElement me = (MessageElement) it.next();
+		
+		Iterator<?> it2 = me.getChildElements();
+		try{
+			if(it2.hasNext()){
+				MessageElement me2 = (MessageElement) it2.next();
+				query = me2.getValue();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+
+
 		return query;
 	}
 		

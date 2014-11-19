@@ -143,19 +143,22 @@
 				<ui:insert name="overlay">
 					<c:if test="#{menuVista.indicador.idIndicador != 0}">
 						<p:toolbar>
-							<f:facet name="left">
+							<f:facet name="right">
 								<p:menuButton value="Filtros">
-									<p:menuitem value="Filtrar datos de indicador" icon="ui-icon-search"
+									<p:menuitem id="filtroBtn" value="Ver configurados" icon="ui-icon-search" actionListener="#{filtrosConfiguracion.obtenerConfigurados}" >
+										<f:param name="idIndicador" value="#{menuVista.indicador.idIndicador}" />
+									</p:menuitem>
+									<p:menuitem value="Consultar nuevos datos" icon="ui-icon-search"
 										url="/paginas/admin/configurarFiltrosIndicador.xhtml?ind=#{menuVista.indicador.idIndicador}" />
 								</p:menuButton>
 							</f:facet>
-							<f:facet name="right">
-								<p:commandButton id="filtroBtn"
-									actionListener="#{filtrosConfiguracion.obtenerConfigurados}"
-									icon="ui-icon-search" title="Ver" value="Ver">
-									<f:param name="idIndicador"
-										value="#{menuVista.indicador.idIndicador}" />
-								</p:commandButton>
+							
+							<f:facet name="left">
+							
+							
+							<p:commandButton icon="ui-icon-search" value="Ver info" />
+								
+					
 							</f:facet>
 						</p:toolbar>
 
