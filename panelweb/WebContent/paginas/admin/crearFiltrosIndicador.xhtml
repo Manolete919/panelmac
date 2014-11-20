@@ -94,6 +94,7 @@
 					<p:commandButton
 						disabled="#{collectorFiltrosIndicador.filtros.size()==0}"
 						value="Guardar" process="@this"
+						ajax="false"
 						actionListener="#{collectorFiltrosIndicador.guardarfiltros}"
 						update=":form:msgs :form:filtrosConfigurados" />
 				</f:facet>

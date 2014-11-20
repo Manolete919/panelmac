@@ -12,8 +12,10 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+
 import pnl.interfaz.GrupoIndicadorBeanRemote;
 import pnl.interfaz.IndicadorSerieBeanRemote;
+import pnl.modelo.Filtro;
 import pnl.modelo.Indicador;
 import pnl.modelo.Usuario;
 import pnl.modelo.IndicadorSerie;
@@ -125,6 +127,7 @@ public class CollectorIndicadorSerie implements Serializable{
   		try {
     			List<IndicadorSerie> indicadorSeries = this.getIndicadorSeries();
     			indicadorSerieBeanRemote.persistIndicadorSeries(indicadorSeries,indicador);
+
     			addMessage("Datos Guardados exitosamente");
  			
     		} catch (Exception e) {

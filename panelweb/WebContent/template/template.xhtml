@@ -157,16 +157,22 @@
 								</span>
 
 								<p:menuButton value="Indicador">
-									<p:menuitem value="Ver detalle" update=":form:indicadorDetail"
+									<p:menuitem value="Ver info" update=":form:indicadorDetail"
 										oncomplete="PF('indicadorDialog').show()"
-										icon="ui-icon-search"
-										actionListener="#{filtrosConfiguracion.obtenerConfigurados}">
+										icon="ui-icon-search">
 
 										<f:setPropertyActionListener value="#{menuVista.indicador}"
 											target="#{indicadorEliminar.selectedIndicador}" />
 
 									</p:menuitem>
-									<p:menuitem value="Ver SQL" icon="ui-icon-search" url="#" />
+									<p:menuitem value="Ver SQL" update=":form:detalleQueryInfo"
+										oncomplete="PF('sqlQueryInfo').show()"
+										icon="ui-icon-search">
+
+										<f:setPropertyActionListener value="#{menuVista.indicador}"
+											target="#{indicadorEliminar.selectedIndicador}" />
+
+									</p:menuitem>
 								</p:menuButton>
 
 
@@ -280,6 +286,14 @@
 						</p:panelGrid>
 					</p:outputPanel>
 				</p:dialog>
+				
+				<p:dialog header="Sentencia de consulta" widgetVar="sqlQueryInfo" appendTo="@(body)" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+			        <p:outputPanel id="detalleQueryInfo" style="text-align:center;">
+			     
+			        	<h:outputText value="#{indicadorEliminar.query}" style="display:block"/>
+			     
+			        </p:outputPanel>
+			    </p:dialog>
 
 			</h:form>
 
