@@ -144,19 +144,14 @@
 					<c:if test="#{menuVista.indicador.idIndicador != 0}">
 						<p:toolbar>
 							<f:facet name="left">
-								<p:commandButton id="filtroBtn"
-									actionListener="#{filtrosConfiguracion.obtenerConfigurados}"
-									icon="ui-icon-info" value="Filtros"
-									title="Ver filtros configurados">
-									<f:param name="idIndicador"
-										value="#{menuVista.indicador.idIndicador}" />
-								</p:commandButton>
 
-								<span class="ui-separator"> <span
-									class="ui-icon ui-icon-grip-dotted-vertical" />
-								</span>
-
-								<p:menuButton value="Indicador">
+								<p:menuButton value="Opciones">
+								
+										<p:menuitem value="Consultar datos"
+											icon="ui-icon-search"
+											url="/paginas/admin/configurarFiltrosIndicador.xhtml?ind=#{menuVista.indicador.idIndicador}" />
+								
+									
 									<p:menuitem value="Ver info" update=":form:indicadorDetail"
 										oncomplete="PF('indicadorDialog').show()"
 										icon="ui-icon-search">
@@ -175,18 +170,17 @@
 									</p:menuitem>
 								</p:menuButton>
 
-
-
-
 							</f:facet>
 
 							<f:facet name="right">
+								<p:commandButton id="filtroBtn"
+									actionListener="#{filtrosConfiguracion.obtenerConfigurados}"
+									icon="ui-icon-info" value="Filtros"
+									title="Ver filtros configurados">
+									<f:param name="idIndicador"
+										value="#{menuVista.indicador.idIndicador}" />
+								</p:commandButton>
 
-								<p:menuButton value="Consultar">
-									<p:menuitem value="Consultar nuevos datos"
-										icon="ui-icon-search"
-										url="/paginas/admin/configurarFiltrosIndicador.xhtml?ind=#{menuVista.indicador.idIndicador}" />
-								</p:menuButton>
 							</f:facet>
 
 
