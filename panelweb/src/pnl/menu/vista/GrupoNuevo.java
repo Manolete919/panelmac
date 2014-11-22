@@ -12,6 +12,8 @@ import javax.faces.event.ActionEvent;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -33,14 +35,18 @@ public class GrupoNuevo implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	final static Logger logger = Logger.getLogger(GrupoNuevo.class);
+	
+	
 	private UsuarioGrupoBeanRemote usuarioGrupoBeanRemote;
     private Usuario usuario;
     private UsuarioGrupo usuarioGrupo;
     private Grupo grupo;
 
-	
-
-	
+    public GrupoNuevo(){
+    }
+    
+    
 	@ManagedProperty("#{usuarioServicio}")
 	private UsuarioServicio usuarioServicio;
 	
@@ -82,30 +88,42 @@ public class GrupoNuevo implements Serializable{
 	
 	
     public void guardarUsuarioGrupo(ActionEvent actionEvent) {
+    	
+    	
+    	
+    	//HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+
+    	//if (request.getRequestedSessionId() != null && !request.isRequestedSessionIdValid()) {
+    	    // Session has been invalidated during the previous request.
+        	UsuarioGrupoPK id = new UsuarioGrupoPK();
+        	
+        	if(this.hasRole("ROLE_ADMIN")){
+        		
+        		usuarioGrupo.setId(id);
+        		usuarioGrupo.setUsuario(usuario);
+        		usuarioGrupo.setEstado("A");
+        		usuarioGrupoBeanRemote.persistUsuarioGrupo(usuarioGrupo);
+        		
+        		grupo = new Grupo();
+        		grupo.setEstado("A");
+        		usuarioGrupo.setGrupo(grupo);
+            	
+        		
+        		
+
+        		logger.info("GRABO EXITOSAMENTE");
+            	
+                addMessage("Se guardo exitosamente!!",FacesMessage.SEVERITY_INFO);
+                
+               
+              
+        	
+        	}else{
+        		addMessage("NO TIENE PERMISO DE ADMINISTRADOR PARA REALIZAR ESTA ACCION!!",FacesMessage.SEVERITY_WARN);
+        	}
+    	
   	
-    	 
-    	UsuarioGrupoPK id = new UsuarioGrupoPK();
-    	
-    	if(this.hasRole("ROLE_ADMIN")){
-    		
-    		usuarioGrupo.setId(id);
-    		usuarioGrupo.setUsuario(usuario);
-    		usuarioGrupo.setEstado("A");
-    		usuarioGrupoBeanRemote.persistUsuarioGrupo(usuarioGrupo);
-    		
-    		grupo = new Grupo();
-    		grupo.setEstado("A");
-    		usuarioGrupo.setGrupo(grupo);
-        	
-        	
-            addMessage("Se guardo exitosamente!!",FacesMessage.SEVERITY_INFO);
-            
-           
-    	
-    	
-    	}else{
-    		addMessage("NO TIENE PERMISO DE ADMINISTRADOR PARA REALIZAR ESTA ACCION!!",FacesMessage.SEVERITY_WARN);
-    	}
+
 	
     }
      

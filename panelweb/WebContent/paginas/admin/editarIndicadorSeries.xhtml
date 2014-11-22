@@ -19,7 +19,7 @@
 		
 			<f:facet name="header">
 				<p:row>
-					<p:column>Actualizacion de Serie</p:column>
+					<p:column>Actualización de series de indicador</p:column>
 				</p:row>
 			</f:facet>
 
@@ -37,10 +37,10 @@
 						</p:column>
 
 						<p:column headerText="Estado">
-							<p:outputLabel value="#{indicadorSerie.estado}" />
+							<p:outputLabel value="#{(indicadorSerie.estado=='A')?'Activo':'Inactivo'}" />
 						</p:column>
 						
-						<p:column headerText="Visible">
+						<p:column headerText="Acción">
 							<p:selectBooleanCheckbox value="#{indicadorSerie.estadoBoolean}" />
 						</p:column>
 						
