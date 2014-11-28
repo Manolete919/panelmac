@@ -3,8 +3,6 @@ package pnl.interfaz;
 import java.util.List;
 
 import javax.ejb.Remote;
-
-import pnl.modelo.Indicador;
 import pnl.modelo.IndicadorSerie;
 
 
@@ -40,8 +38,7 @@ public interface IndicadorSerieBeanRemote
      */
     public List<IndicadorSerie> getIndicadorSerieFindAll();
 
-	void persistIndicadorSeries(List<IndicadorSerie> indicadorSeries,
-			Indicador indicador) throws Exception;
+	void persistIndicadorSeries(List<IndicadorSerie> indicadorSeries) throws Exception;
 
 	List<IndicadorSerie> obtenerIndicadorSeriePorIdIndicadorEstado(
 			long idIndicador, String estado)  throws Exception;

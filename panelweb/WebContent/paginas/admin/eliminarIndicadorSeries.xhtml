@@ -19,7 +19,7 @@
 		
 			<f:facet name="header">
 				<p:row>
-					<p:column>Borrado de Serie</p:column>
+					<p:column>Borrado de Series de indicador</p:column>
 				</p:row>
 			</f:facet>
 
@@ -29,19 +29,25 @@
 
 
 					<p:dataTable id="seriesAElminar" value="#{indicadorSerieEliminar.indicadorSeries}" selection="#{indicadorSerieEliminar.selectedIndicadorSeries}" rowKey="#{indicadorSerie.idSerie}"
-						style="margin:10px;" var="indicadorSerie" rows="5"
+						style="margin:10px;" var="indicadorSerie" rows="5" emptyMessage="No hay series configuradas"
 							paginator="true">
 				
         				<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
-        			
+        			    <p:ajax event="toggleSelect" update="btnEliminar" /> 
+        				<p:ajax event="rowSelectCheckbox" update="btnEliminar" /> 
+        				<p:ajax event="rowUnselectCheckbox" update="btnEliminar" /> 
         				
         				
-        				<p:column headerText="Nombre">
-        					<h:outputText value="#{indicadorSerie.nombre}" />
-        				</p:column>
+        				<p:column headerText="Nombre" footerText="contiene" filterBy="#{indicadorSerie.nombre}" filterFunction="#{filterView.filterByName}"  >
+							<p:outputLabel value="#{indicadorSerie.nombre}"  />
+						</p:column>
+
+						<p:column headerText="Estado" footerText="contiene" filterBy="#{indicadorSerie.estadoVisual}" filterFunction="#{filterView.filterByName}"  >
+							<p:outputLabel value="#{indicadorSerie.estadoVisual}" />
+						</p:column>
         				
         				<f:facet name="footer">
-        					<p:commandButton value="Eliminar"  disabled="#{indicadorSerieEliminar.indicadorSeries.size()==0}" update=":form:msgs,seriesAElminar" actionListener="#{indicadorSerieEliminar.eliminar}" /> 											
+        					<p:commandButton id="btnEliminar" value="Eliminar"  disabled="#{empty indicadorSerieEliminar.selectedIndicadorSeries}" update=":form:msgs,seriesAElminar" actionListener="#{indicadorSerieEliminar.eliminar}" /> 											
         				</f:facet>
 						
 					</p:dataTable>

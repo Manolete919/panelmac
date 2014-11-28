@@ -95,6 +95,14 @@
 						url="/paginas/admin/eliminarIndicadorSeries.xhtml?ind=#{menuVista.indicador.idIndicador}" />
 
 				</p:submenu>
+				
+				<p:submenu label="Historial"  icon="ui-icon-person">
+
+					<p:menuitem icon="ui-icon-search" value="consultar historial"
+						url="/paginas/admin/historial.xhtml" />
+					<p:separator />
+
+				</p:submenu>
 
 
 				<f:facet name="options">
@@ -192,24 +200,35 @@
 					<p:outputLabel rendered="#{menuVista.indicador.idIndicador == 0}"
 						value="El indicador no existe, o ha sido eliminado" />
 
-					<p:overlayPanel id="filtrosPanel" for="filtroBtn" hideEffect="fade"
-						dynamic="true" style="width:600px">
-						<p:dataTable var="filtro"
+					<p:overlayPanel id="filtrosPanel" for="filtroBtn" hideEffect="fade" dynamic="true" style="width:600px">
+						<p:dataTable var="filtro" emptyMessage="No hay filtros configurados"
 							value="#{filtrosConfiguracion.filtrosConfigurados}" rows="5"
 							paginator="true">
-
-							<p:column headerText="Nombre">
-								<h:outputText value="#{filtro.nombre}" />
-							</p:column>
-
-							<p:column headerText="Orden">
+							
+							<p:column headerText="Orden" footerText="contiene" filterBy="#{filtro.indiceFiltro}"  filterFunction="#{filterView.filterByName}"  >
 								<h:outputText value="#{filtro.indiceFiltro}" />
 							</p:column>
 
-							<p:column headerText="Nivel">
-								<p:outputLabel
-									value="#{(filtro.anivelIndicador=='S')?'INDICADOR':'SERIE'}" />
+							<p:column headerText="Filtro" footerText="contiene" filterBy="#{filtro.nombre}"  filterFunction="#{filterView.filterByName}"  >
+								<h:outputText value="#{filtro.nombre}" />
 							</p:column>
+
+						<p:column headerText="Valor">		
+									
+							<h:outputText rendered="#{filtro.anivelIndicador=='S'}" value="#{filtro.valorInicial}" />
+							
+				             <p:commandButton rendered="#{filtro.anivelIndicador=='N'}" update=":form:serieFiltroValorDetalles" oncomplete="PF('seriesFiltrosValorDialogos').show()" icon="ui-icon-search" title="Ver detalle">
+				                <f:setPropertyActionListener value="#{filtro}" target="#{filtrosConfiguracion.selectedFiltro}" />
+				            </p:commandButton>
+			            							
+						</p:column>
+
+							<p:column headerText="Nivel" footerText="contiene" filterBy="#{filtro.anivelVisual}"  filterFunction="#{filterView.filterByName}" >
+								<p:outputLabel value="#{filtro.anivelVisual}" />
+							</p:column>
+							
+							
+							
 						</p:dataTable>
 					</p:overlayPanel>
 
@@ -235,27 +254,27 @@
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.modeloGrafico.nombre}" />
 
-							<h:outputText value="Valor minimo y" />
+							<h:outputText value="Valor mínimo y" />
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.valorMiny}" />
 
-							<h:outputText value="Valor maximo y" />
+							<h:outputText value="Valor máximo y" />
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.valorMaxy}" />
 
-							<h:outputText value="Descripcion y" />
+							<h:outputText value="Descripción y" />
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.etiquetaEjey}" />
 
-							<h:outputText value="Descripcion x" />
+							<h:outputText value="Descripción x" />
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.etiquetaEjex}" />
 
-							<h:outputText value="Numero de servicio" />
+							<h:outputText value="Número de servicio" />
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.idServicio}" />
 
-							<h:outputText value="Numero de filtros" />
+							<h:outputText value="Número de filtros" />
 							<h:outputText
 								value="#{indicadorEliminar.selectedIndicador.filtros.size()}" />
 
@@ -290,6 +309,27 @@
 			     
 			        </p:outputPanel>
 			    </p:dialog>
+			    
+				<p:dialog header=" Info: filtros de series" widgetVar="seriesFiltrosValorDialogos"
+					 showEffect="fade" hideEffect="fade"
+					resizable="false">
+					<p:outputPanel id="serieFiltroValorDetalles"  style="text-align:center;">
+				        
+				            
+				            <p:dataTable value="#{filtrosConfiguracion.indicadorSerieFiltros}" style="width:600px;" var="indicadorSerieFiltro">
+				            	<p:column headerText="Serie"  footerText="contiene" filterBy="#{indicadorSerieFiltro.indicadorSery.nombre}"  filterFunction="#{filterView.filterByName}"  >
+				            		<h:outputText value="#{indicadorSerieFiltro.indicadorSery.nombre}"/>
+				            	</p:column>
+				            	<p:column headerText="Filtro">
+				            		<h:outputText value="#{indicadorSerieFiltro.filtro.nombre}"/>
+				            	</p:column>
+				            	<p:column headerText="Valor">
+				            		<h:outputText value="#{indicadorSerieFiltro.valor}"/>
+				            	</p:column>
+				            </p:dataTable>
+			           
+					</p:outputPanel>
+				</p:dialog>
 
 			</h:form>
 

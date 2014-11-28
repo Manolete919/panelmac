@@ -75,6 +75,9 @@ public class IndicadorNuevo implements Serializable {
 	private IndicadorSerie indicadorSerie;
 	private Usuario usuario;
 	private List<FiltroValorDefault> filtroValores;
+	List<Grupo> gruposSource;
+	List<Grupo> gruposTarget;
+	
 
 	@ManagedProperty("#{usuarioServicio}")
 	private UsuarioServicio usuarioServicio;
@@ -102,8 +105,8 @@ public class IndicadorNuevo implements Serializable {
 		Utileria u = new Utileria();
 		
 		
-        List<Grupo> gruposSource = new ArrayList<Grupo>();
-        List<Grupo> gruposTarget = new ArrayList<Grupo>();
+		gruposSource = new ArrayList<Grupo>();
+        gruposTarget = new ArrayList<Grupo>();
 		
 
 		try {
@@ -135,8 +138,8 @@ public class IndicadorNuevo implements Serializable {
 		try {
 			modeloGraficos = modeloGraficoBeanRemote.getModeloGraficoFindAll();
 			filtroValores = new ArrayList<FiltroValorDefault>();
-			filtroValores.add(new FiltroValorDefault(null,usuario.getIdUsuario()));
-			Servicio servicio  = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(2), usuario.getIdUsuario(), usuario.getClave());	
+			filtroValores.add(new FiltroValorDefault(null,usuario.getUsuariosWsg().getIdUsuario()));
+			Servicio servicio  = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(2), usuario.getUsuariosWsg().getIdUsuario(), usuario.getUsuariosWsg().getClave());	
 			wsgServicios = new ArrayList<WsgServicio>();
 			if(servicio != null ){
 				if(servicio.get_any() != null ){					
@@ -237,7 +240,11 @@ public class IndicadorNuevo implements Serializable {
 
 					menuVista.actualizarMenu();
 					indicador = new Indicador();
+					indicador.setValorMiny(new BigDecimal(0));
+					indicador.setValorMaxy(new BigDecimal(300));
 					indicadorSerie = new IndicadorSerie();
+					gruposTarget = new ArrayList<Grupo>();
+					grupos = new DualListModel<Grupo>(gruposSource, gruposTarget);
 
 					
 
@@ -402,7 +409,7 @@ public class IndicadorNuevo implements Serializable {
 		Utileria u = new Utileria();		
 		
 		try {
-			Servicio servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(3), usuario.getIdUsuario(), usuario.getClave());
+			Servicio servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(3), usuario.getUsuariosWsg().getIdUsuario(), usuario.getUsuariosWsg().getClave());
 			if(servicio != null ){
 				if(servicio.get_any() != null ){
 					query = cg.procesaDatosIdServicio(servicio.get_any());

@@ -4,18 +4,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import pnl.interfaz.GrupoBeanRemote;
 import pnl.interfaz.UsuarioGrupoBeanRemote;
 import pnl.modelo.Usuario;
@@ -23,7 +27,10 @@ import pnl.modelo.UsuarioGrupo;
 import pnl.servicio.UsuarioServicio;
 
 @ManagedBean
+@ViewScoped
 public class GrupoEliminar implements Serializable {
+	
+	//http://jsfcorner.blogspot.com/2012/11/disabled-selection-button-for.html
 
 	/**
 	 * 
@@ -40,6 +47,8 @@ public class GrupoEliminar implements Serializable {
 	
 	@ManagedProperty("#{menuVista}")
 	private MenuVista menuVista;
+	
+	
 
 
 	@PostConstruct
@@ -104,7 +113,7 @@ public class GrupoEliminar implements Serializable {
 				
 			
 				addMessage("Se eliminaron exitosamente!!",FacesMessage.SEVERITY_INFO);
-				usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioEstado(usuario.getIdUsuario(),null);
+				usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioNoOcupados(usuario.getIdUsuario());
 				menuVista.actualizarMenu();
 			} catch (Exception e) {
 				addMessage("Ocurrio algun error!",FacesMessage.SEVERITY_ERROR);
@@ -173,10 +182,8 @@ public class GrupoEliminar implements Serializable {
 	public void setMenuVista(MenuVista menuVista) {
 		this.menuVista = menuVista;
 	}
-	
-	
-	
-	
-	
+
+
+
 
 }

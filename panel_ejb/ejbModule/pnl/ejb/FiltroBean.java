@@ -14,10 +14,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
 import pnl.interfaz.FiltroBeanRemote;
 import pnl.modelo.Filtro;
-import pnl.modelo.Indicador;
+
 
 /**
  * @generated DT_ID=none
@@ -86,16 +85,15 @@ public class FiltroBean implements FiltroBeanRemote,Serializable {
 	/**
 	 * @generated DT_ID=none
 	 */
+	@SuppressWarnings("unchecked")
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<Filtro> getFiltroFindAll() {
 		return em.createNamedQuery("Filtro.findAll").getResultList();
 	}
 
 	@Override
-	public void persistFiltros(List<Filtro> filtros, Indicador indicador)
-			throws Exception {
+	public void persistFiltros(List<Filtro> filtros) throws Exception {
 		for( Filtro filtro : filtros ){
-			filtro.setIndicador(indicador);
 			this.persistFiltro(filtro);
 		}
 

@@ -32,10 +32,11 @@
 					<p:dataTable emptyMessage="No existen filtros de Series para configurar" value="#{filtrosSeriesConfiguracion.indicadorSerieFiltros}"
 						style="margin:10px;" var="indicadorSerieFiltro" rows="5"
 							paginator="true" >
-						<p:column headerText="Serie" >
+							
+						<p:column headerText="Serie" footerText="contiene" filterBy="#{indicadorSerieFiltro.indicadorSery.nombre}"  filterFunction="#{filterView.filterByName}"  >
 							<h:outputText value="#{indicadorSerieFiltro.indicadorSery.nombre}" />
 						</p:column>
-						<p:column headerText="Filtro">
+						<p:column headerText="Filtro" footerText="contiene" filterBy="#{indicadorSerieFiltro.filtro.nombre}"  filterFunction="#{filterView.filterByName}"  >
 							<h:outputText
 								value="#{indicadorSerieFiltro.filtro.nombre}" />
 						</p:column>
@@ -44,7 +45,7 @@
 						</p:column>
 						
 						<f:facet name="footer">
-							<p:commandButton disabled="#{filtrosSeriesConfiguracion.indicadorSerieFiltros.size()==0}" value="Grabar Valores" update=":form:msgs" actionListener="#{filtrosSeriesConfiguracion.guardarFiltrosSeries}" />
+							<p:commandButton disabled="#{filtrosSeriesConfiguracion.indicadorSerieFiltros.size()==0}" value="Grabar valores" update=":form:msgs" actionListener="#{filtrosSeriesConfiguracion.guardarFiltrosSeries}" />
 						</f:facet>
 						
 					</p:dataTable>

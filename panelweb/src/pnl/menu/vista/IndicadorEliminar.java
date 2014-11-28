@@ -7,8 +7,10 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -36,7 +38,10 @@ import pnl.webservice.integracion.Utileria;
 import pnl.wsg.Servicio;
 
 @ManagedBean
+@ViewScoped
 public class IndicadorEliminar implements Serializable {
+	
+	//http://jsfcorner.blogspot.com/2012/11/disabled-selection-button-for.html
 
 	/**
 	 * 
@@ -132,8 +137,8 @@ public class IndicadorEliminar implements Serializable {
 		this.menuVista = menuVista;
 	}
 
-	public void addMessage(String summary) {
-		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+	public void addMessage(String summary,Severity severity) {
+		FacesMessage message = new FacesMessage(severity,
 				summary, null);
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
@@ -143,22 +148,22 @@ public class IndicadorEliminar implements Serializable {
 		if (this.hasRole("ROLE_ADMIN")) {
 
 			try {
-				// grupoIndicadorBeanRemote.persistUsuarioIndicador(usuarioIndicador);
+				
 
 				indicadorBeanRemote.removeIndicadores(this.getSelectedIndicadores());
 
-				addMessage("Se eliminaron exitosamente!!");
+				addMessage("Se eliminaron exitosamente!!",FacesMessage.SEVERITY_INFO);
 
 				menuVista.actualizarMenu();
 				//recalcular
 				indicadores = grupoIndicadorBeanRemote.obtieneIndicadoresPorIdUsuario(usuario.getIdUsuario());
 
 			} catch (Exception e) {
-
+				addMessage("Hubieron errores!",FacesMessage.SEVERITY_ERROR);
 			}
 
 		} else {
-			addMessage("NO TIENE PERMISO PARA REALIZAR ESTA ACCION!!");
+			addMessage("NO TIENE PERMISO PARA REALIZAR ESTA ACCION!!",FacesMessage.SEVERITY_INFO);
 		}
 
 	}
@@ -202,7 +207,7 @@ public class IndicadorEliminar implements Serializable {
 			Utileria u = new Utileria();		
 			
 		
-			Servicio servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(3), usuario.getIdUsuario(), usuario.getClave());
+			Servicio servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(3), usuario.getUsuariosWsg().getIdUsuario(), usuario.getUsuariosWsg().getClave());
 			if(servicio != null ){
 				if(servicio.get_any() != null ){
 					query = cg.procesaDatosIdServicio(servicio.get_any());

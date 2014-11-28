@@ -32,12 +32,12 @@
 						style="margin:10px;" var="indicadorSerie" rows="5"
 							paginator="true">
 						
-						<p:column headerText="Nombre">
+						<p:column headerText="Nombre" footerText="contiene" filterBy="#{indicadorSerie.nombre}" filterFunction="#{filterView.filterByName}"  >
 							<p:outputLabel value="#{indicadorSerie.nombre}"  />
 						</p:column>
 
-						<p:column headerText="Estado">
-							<p:outputLabel value="#{(indicadorSerie.estado=='A')?'Activo':'Inactivo'}" />
+						<p:column headerText="Estado" footerText="contiene" filterBy="#{indicadorSerie.estadoVisual}" filterFunction="#{filterView.filterByName}"  >
+							<p:outputLabel value="#{indicadorSerie.estadoVisual}" />
 						</p:column>
 						
 	

@@ -15,8 +15,13 @@ import javax.naming.InitialContext;
 
 import pnl.interfaz.FiltroBeanRemote;
 import pnl.interfaz.GrupoIndicadorBeanRemote;
+import pnl.interfaz.IndicadorSerieBeanRemote;
+import pnl.interfaz.IndicadorSerieFiltroBeanRemote;
 import pnl.modelo.Indicador;
 import pnl.modelo.Filtro;
+import pnl.modelo.IndicadorSerie;
+import pnl.modelo.IndicadorSerieFiltro;
+import pnl.modelo.IndicadorSerieFiltroPK;
 import pnl.modelo.Usuario;
 import pnl.servicio.UsuarioServicio;
 import pnl.webservice.integracion.ConsultaGenerico;
@@ -37,11 +42,16 @@ public class CollectorFiltrosSerie implements Serializable{
 	private List<Filtro> filtrosConfigurados;
 	private List<FiltroValorDefault> filtroValores;
 	private FiltroBeanRemote filtroBeanRemote;
+	private IndicadorSerieBeanRemote indicadorSerieBeanRemote;
 	private GrupoIndicadorBeanRemote grupoIndicadorBeanRemote;
 	private Indicador indicador;
 	private int indiceTipoDato; 
 	private int indiceTipoEntrada; 
     private List<Filtro> filtros;
+	private List<IndicadorSerieFiltro> indicadorSerieFiltros;
+	private IndicadorSerieFiltroBeanRemote indicadorSerieFiltroBeanRemote;
+	private List<IndicadorSerieFiltro> indicadorSerieFiltrosConfigurados;
+	private Filtro selectedFiltro;
     private Usuario usuario;
  
     private String query;
@@ -57,6 +67,7 @@ public class CollectorFiltrosSerie implements Serializable{
     	filtro = new Filtro();
     	filtro.setEstado("A");
     	filtro.setAnivelIndicador("N");
+    	indicadorSerieFiltros = new ArrayList<IndicadorSerieFiltro>();
     	
     	
     	try {
@@ -69,13 +80,13 @@ public class CollectorFiltrosSerie implements Serializable{
 
 			InitialContext ic = new InitialContext(pr);
 
-			filtroBeanRemote = (FiltroBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/FiltroBean");
+			filtroBeanRemote = (FiltroBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/FiltroBean");
 
-			grupoIndicadorBeanRemote = (GrupoIndicadorBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/GrupoIndicadorBean");
+			grupoIndicadorBeanRemote = (GrupoIndicadorBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/GrupoIndicadorBean");
 	
-		
+			indicadorSerieFiltroBeanRemote = (IndicadorSerieFiltroBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/IndicadorSerieFiltroBean");
+			
+			indicadorSerieBeanRemote = (IndicadorSerieBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/IndicadorSerieBean");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,6 +117,7 @@ public class CollectorFiltrosSerie implements Serializable{
     	
    	
     	filtro = new Filtro();
+    	filtro.setEstado("A");
     	filtro.setAnivelIndicador("N");
          
         return null;
@@ -132,7 +144,7 @@ public class CollectorFiltrosSerie implements Serializable{
 			indicador = grupoIndicadorBeanRemote.obtieneIndicadorPorIdYUsuario(idIndicador,usuario.getIdUsuario());
 			filtroValores = new ArrayList<FiltroValorDefault>();
 			filtroValores.add(new FiltroValorDefault(null,indicador.getIdServicio().toString()));
-			filtrosConfigurados = filtroBeanRemote.obtenerFiltrosDeIndicadorPorIndicadorNivel(idIndicador,"N");
+			filtrosConfigurados = filtroBeanRemote.obtenerFiltrosDeIndicadorPorIndicadorNivel(idIndicador,null);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -143,15 +155,50 @@ public class CollectorFiltrosSerie implements Serializable{
 
 
 	public void guardarFiltros(){
+		
+
 				
 
 		
 
     		try {
     			
+    			//extraer la cantidad de series
+    			//consultar todas las series del indicador
+    			
+    			List<Filtro> filtros2 = new ArrayList<Filtro>();
+     			
+    			List<IndicadorSerie> indicadorSeries = indicadorSerieBeanRemote.obtenerIndicadorSeriePorIdIndicadorEstado(this.getIndicador().getIdIndicador(), null);
+  
+   			
+   				for(Filtro filtro :filtros){
+					
+   					//inicializa el array de serie filt
+   					indicadorSerieFiltros = new ArrayList<IndicadorSerieFiltro>();
+					//recorrer todas las series, con el mismo filtro
+   					for(IndicadorSerie indicadorSerie : indicadorSeries){ 
+   						
+   						IndicadorSerieFiltro  indicadorSerieFiltro = new IndicadorSerieFiltro();
+   						IndicadorSerieFiltroPK id = new IndicadorSerieFiltroPK();
+   						indicadorSerieFiltro.setId(id);  					
+    					indicadorSerieFiltro.setFiltro(filtro);
+    					indicadorSerieFiltro.setIndicadorSery(indicadorSerie);
+    					indicadorSerieFiltro.setIndicador(indicador); 
+    					
+    					indicadorSerieFiltros.add(indicadorSerieFiltro);
+   					}
+   					
+   					filtro.setIndicadorSerieFiltros(indicadorSerieFiltros);
+   					filtro.setIndicador(indicador);
+   					filtros2.add(filtro);
+   					
+				}  
+    			
+    			
+    			
     			
     			//cada uno de los filtros deben agregar seccion e indicador
-    			filtroBeanRemote.persistFiltros(this.getFiltros(),indicador);
+    			filtroBeanRemote.persistFiltros(filtros2);
 
     			addMessage("Datos Guardados exitosamente");
     			filtro = new Filtro();
@@ -214,7 +261,7 @@ public class CollectorFiltrosSerie implements Serializable{
 		ConsultaGenerico cg = new ConsultaGenerico();
 		Utileria u = new Utileria();		
 		try {
-			Servicio servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(3), usuario.getIdUsuario(), usuario.getClave());
+			Servicio servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(3), usuario.getUsuariosWsg().getIdUsuario(), usuario.getUsuariosWsg().getClave());
 			if(servicio != null ){
 				if(servicio.get_any() != null ){
 					query = cg.procesaDatosIdServicio(servicio.get_any());
@@ -226,5 +273,31 @@ public class CollectorFiltrosSerie implements Serializable{
 		}
 	}
 
+
+	public Filtro getSelectedFiltro() {
+		return selectedFiltro;
+	}
+
+
+	public void setSelectedFiltro(Filtro selectedFiltro) {
+		
+		try {
+			indicadorSerieFiltrosConfigurados = indicadorSerieFiltroBeanRemote.obtenerSerieFiltrosPorIdIndicadorIdFiltro(selectedFiltro.getIndicador().getIdIndicador(), selectedFiltro.getIdFiltro());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		
+		this.selectedFiltro = selectedFiltro;
+	}
+
+
+	public List<IndicadorSerieFiltro> getIndicadorSerieFiltrosConfigurados() {
+		return indicadorSerieFiltrosConfigurados;
+	}
+
+	
+	
     
 }
