@@ -36,7 +36,7 @@ public interface AccionUsuarioBeanRemote
      * @generated DT_ID=none
      */
     public List<AccionUsuario> getAccionUsuarioFindAll();
-
-	public AccionUsuario obtenerAccionUsuario(long idAccionUsuario) throws Exception;
+    
+    public AccionUsuario obtenerAccionUsuario(long idAccionUsuario) throws Exception;
 
 }

@@ -76,43 +76,27 @@ public class LineView implements Serializable {
 					LineChartSeries serie = new LineChartSeries();
 					// serie.setFill(true);
 					serie.setLabel(pSerieGrafico.getNombre());
-					System.out.println("");
+		
 					// agregar los parametros del grafico
-					List<FiltroValorDefault> parametrosPropiedadValores = serieGraficoParametrosPropiedadValor
-							.getFiltroValorDefaults();
+					List<FiltroValorDefault> parametrosPropiedadValores = serieGraficoParametrosPropiedadValor.getFiltroValorDefaults();
 					List<Generico> datos = new ArrayList<Generico>();
 					datos.add(new Generico(0, 0));
 					Servicio servicio = null;
-					if (parametrosPropiedadValores != null) {
-						if (!parametrosPropiedadValores.isEmpty()) {
-							Utileria u = new Utileria();
-							try {
-								System.out
-										.print(Utileria.convertirDocumentToString(u
-												.convertirFiltroValorEnDocument(parametrosPropiedadValores)));
-								servicio = cg
-										.consultarServicioWebGenerico(
-												u.convertirFiltroValorEnDocument(parametrosPropiedadValores),
-												dinamico.getIndicador()
-														.getIdServicio()
-														.longValue(), dinamico
-														.getUsuario().getUsuariosWsg()
-														.getIdUsuario(),
-												dinamico.getUsuario().getUsuariosWsg()
-														.getClave());
-								if (servicio != null) {
-									if (servicio.get_any() != null) {
-										datos = new ArrayList<Generico>();
-										datos = cg
-												.procesaDatosDeGraficos(servicio
-														.get_any());
-									}
-								}
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+					Utileria u = new Utileria();
+					try {
+						System.out.print(Utileria.convertirDocumentToString(u.convertirFiltroValorEnDocument(parametrosPropiedadValores)));
+						servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(parametrosPropiedadValores),dinamico.getIndicador().getIdServicio().longValue(), dinamico.getUsuario().getUsuariosWsg().getIdUsuario(),dinamico.getUsuario().getUsuariosWsg().getClave());
+						if (servicio != null) {
+							if (servicio.get_any() != null) {
+								datos = new ArrayList<Generico>();
+								datos = cg
+										.procesaDatosDeGraficos(servicio
+												.get_any());
 							}
 						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					// setear cada serie
 					for (Generico dato : datos) {
