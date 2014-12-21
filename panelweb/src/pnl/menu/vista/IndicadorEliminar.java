@@ -81,8 +81,7 @@ public class IndicadorEliminar implements Serializable {
 			grupoIndicadorBeanRemote = (GrupoIndicadorBeanRemote) ic
 					.lookup("java:global.panel_ear.panel_ejb/GrupoIndicadorBean");
 			
-			indicadorBeanRemote = (IndicadorBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/IndicadorBean");
+			indicadorBeanRemote = (IndicadorBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/IndicadorBean");
 
 			indicadores = grupoIndicadorBeanRemote.obtieneIndicadoresPorIdUsuario(usuario.getIdUsuario());
 			

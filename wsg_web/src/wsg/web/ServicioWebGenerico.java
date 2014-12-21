@@ -35,7 +35,7 @@ import wsg.query.EjecutaQuery;
 import wsg.response.Servicio;
 
 
-@WebService(serviceName = "GenericoService", name = "GenericoPortType", targetNamespace = "http://axis/EISApiOnlineWS.wsdl/types/")
+@WebService(serviceName = "GenericoService",  targetNamespace = "http://axis/EISApiOnlineWS.wsdl/types/")
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT, use = SOAPBinding.Use.LITERAL, parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
 public class ServicioWebGenerico {
 	
@@ -65,7 +65,7 @@ public class ServicioWebGenerico {
 	
 	
 	
-	@WebMethod(operationName = "obtenerXml", action = "http://axis/EISApiOnlineWS.wsdl/types//eipConsumeServicio")
+	@WebMethod(operationName = "obtenerXml", action = "http://axis/EISApiOnlineWS.wsdl/types//obtenerXml")
 	@WebResult(targetNamespace = "http://axis/EISApiOnlineWS.wsdl/types/", name = "result")
 	@RequestWrapper(localName = "servicioElement", targetNamespace = "http://axis/EISApiOnlineWS.wsdl/types/")
 	@ResponseWrapper(localName = "servicioResponseElement", targetNamespace = "http://axis/EISApiOnlineWS.wsdl/types/")
@@ -75,6 +75,9 @@ public class ServicioWebGenerico {
 			@XmlElement(required = true, namespace = "http://axis/EISApiOnlineWS.wsdl/types/") @WebParam(name = "clave") String clave,
 			@XmlElement(required = false, namespace = "http://axis/EISApiOnlineWS.wsdl/types/") @WebParam(name = "sentencias_binds") Bind sentencias_binds) {
 	
+		//encriptar la clave
+		clave = Utileria.generateHash(clave);
+		
 		Servicio servicio = new Servicio();
 		WsgServiciosLog wsgServiciosLog = new WsgServiciosLog();
 		wsgServiciosLog.setIdServicio(new BigDecimal(idServicio));
@@ -119,9 +122,10 @@ public class ServicioWebGenerico {
 			wsgServiciosLogBeanRemote = (WsgServiciosLogBeanRemote)ctx.lookup("java:global.wsg_ejb_ear.wsg_ejb/WsgServiciosLogBean"); 
 			
 			
-			wsgServicio = wsgServicioBeanRemote.find(idServicio);
+			//wsgServicio = wsgServicioBeanRemote.find(idServicio);
 			
-			ds = Conexion.obtenerFuenteDeDatos(wsgServicio.getWsgJndi().getJndi());
+			wsgServicio = wsgServicioBeanRemote.buscarServicioPorIdActivoYVigente(idServicio);
+			
 			
 			
 			//preguntar si tiene acceso, caso contrario devolver mensaje
@@ -134,7 +138,7 @@ public class ServicioWebGenerico {
 			wsgUsuarioServicio =  wsgUsuarioServicioBeanRemote.find(id);			
 			
 			
-			if(wsgUsuarioServicio == null ){
+			if(wsgUsuarioServicio == null || wsgServicio == null ){
 				
 				servicio.setMensajeError(getPropiedades().getProperty("wsgwar.servicioUsuarioNoExiste"));
 				logger.error(servicio.getMensajeError());
@@ -152,6 +156,8 @@ public class ServicioWebGenerico {
 				
 				
 			}
+			
+			ds = Conexion.obtenerFuenteDeDatos(wsgServicio.getWsgJndi().getJndi());
 			
 			wsgUsuario = wsgUsuarioServicio.getWsgUsuario(); 
 			
@@ -212,10 +218,10 @@ public class ServicioWebGenerico {
 						//Todo exitoso
 						
 						
-						servicio.setCodigoError(777);
+						servicio.setCodigoError(-38170);
 						servicio.setProveedorBase(vendor);
 						servicio.setMensajeError(getPropiedades().getProperty("wsgwar.resultadoExitoso"));
-						wsgServiciosLog.setProveedor(vendor);
+						wsgServiciosLog.setProveedor(servicio.getProveedorBase());
 						wsgServiciosLog.setSentenciaSql(wsgServicio.getWsgQuery().getQuery());
 						//registro log bd
 						wsgServiciosLog.setXml(xmlString);
@@ -244,18 +250,13 @@ public class ServicioWebGenerico {
 						
 					} catch (SQLException sqlError) {
 						
-						String errorSql = getPropiedades().getProperty(vendor+"."+sqlError.getErrorCode());
-						
 						
 						System.out.println("PROPIEDAD-->" + vendor+"."+sqlError.getErrorCode());
 						
-						if(errorSql == null ){
-							errorSql = sqlError.getMessage();
-						}
 						
 						servicio.setProveedorBase(vendor);
 						servicio.setCodigoError(sqlError.getErrorCode());
-						servicio.setMensajeError(errorSql);
+						servicio.setMensajeError(sqlError.getMessage());
 				
 						logger.error(sqlError.getErrorCode());
 						logger.error(sqlError.getMessage());
@@ -311,7 +312,7 @@ public class ServicioWebGenerico {
 								conn.close();
 							} catch (SQLException e) {
 								e.printStackTrace();
-								servicio.setCodigoError(-6);
+								servicio.setCodigoError(e.getErrorCode());
 								servicio.setMensajeError(e.getMessage());
 								servicio.setProveedorBase(vendor);
 								logger.error(e);
@@ -319,6 +320,7 @@ public class ServicioWebGenerico {
 								try{	
 									wsgServiciosLog.setCodError(new BigDecimal(servicio.getCodigoError()));
 									wsgServiciosLog.setMsgError(servicio.getMensajeError());
+									wsgServiciosLog.setProveedor(servicio.getProveedorBase());
 									wsgServiciosLog.setFechaFin(new Date());
 									wsgServiciosLogBeanRemote.create(wsgServiciosLog);
 									return servicio;
@@ -343,7 +345,7 @@ public class ServicioWebGenerico {
 				
 				}else{
 					servicio.setMensajeError(getPropiedades().getProperty("wsgwar.servicioUsuarioInactivo"));
-					servicio.setCodigoError(-8);
+					servicio.setCodigoError(-3);
 					servicio.setProveedorBase(vendor);
 					logger.error(servicio.getMensajeError());
 
@@ -378,7 +380,7 @@ public class ServicioWebGenerico {
 			}else{
 				servicio.setMensajeError(getPropiedades().getProperty("wsgwar.cuentaBloqueada"));
 				logger.error(servicio.getMensajeError());
-				servicio.setCodigoError(-9);
+				servicio.setCodigoError(-4);
 				servicio.setProveedorBase(vendor);
 
 				//registro log bd
@@ -412,7 +414,7 @@ public class ServicioWebGenerico {
 	    }catch(NameNotFoundException e0 ){
 
 			e0.printStackTrace();
-			servicio.setCodigoError(-10);
+			servicio.setCodigoError(-6);
 			servicio.setProveedorBase(vendor);
 			servicio.setMensajeError(e0.getMessage());
 			logger.error(e0);
@@ -473,7 +475,7 @@ public class ServicioWebGenerico {
 	    catch (Exception e0) {
 			// TODO Auto-generated catch block
 			e0.printStackTrace();
-			servicio.setCodigoError(-11);
+			servicio.setCodigoError(-5);
 			servicio.setMensajeError(e0.getMessage());
 			servicio.setProveedorBase(vendor);
 			ds = null;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
@@ -17,9 +16,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
-import org.springframework.util.Assert;
-
 import pnl.interfaz.FiltroBeanRemote;
 import pnl.interfaz.GrupoIndicadorBeanRemote;
 import pnl.interfaz.IndicadorSerieBeanRemote;
@@ -191,8 +187,7 @@ public class CollectorFiltrosSerie implements Serializable {
 
 			}
 
-			System.out.println(" CANTIDAD DE FILTROS A GUARDAR "
-					+ filtros2.size());
+	
 
 			// cada uno de los filtros deben agregar seccion e indicador
 			filtroBeanRemote.persistFiltros(filtros2);
@@ -204,10 +199,8 @@ public class CollectorFiltrosSerie implements Serializable {
 			filtros = new ArrayList<Filtro>();
 
 		} catch (EJBException e) {
-			@SuppressWarnings("ThrowableResultIgnored")
 			Exception cause = e.getCausedByException();
 			if (cause instanceof ConstraintViolationException) {
-				@SuppressWarnings("ThrowableResultIgnored")
 				ConstraintViolationException cve = (ConstraintViolationException) e
 						.getCausedByException();
 				for (Iterator<ConstraintViolation<?>> it = cve

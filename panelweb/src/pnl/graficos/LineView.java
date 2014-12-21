@@ -33,6 +33,8 @@ public class LineView implements Serializable {
 	private LineChartModel lineModel2;
 	@ManagedProperty("#{dinamico}")
 	private Dinamico dinamico;
+	private String mensajeDeAplicacion = "";
+	private int codigoDeAplicacion = 0;
 
 	@PostConstruct
 	public void init() {
@@ -80,9 +82,10 @@ public class LineView implements Serializable {
 					// agregar los parametros del grafico
 					List<FiltroValorDefault> parametrosPropiedadValores = serieGraficoParametrosPropiedadValor.getFiltroValorDefaults();
 					List<Generico> datos = new ArrayList<Generico>();
-					datos.add(new Generico(0, 0));
+					datos.add(new Generico("", 0));
 					Servicio servicio = null;
 					Utileria u = new Utileria();
+					CatalogoError catalogo = new CatalogoError();
 					try {
 						System.out.print(Utileria.convertirDocumentToString(u.convertirFiltroValorEnDocument(parametrosPropiedadValores)));
 						servicio = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(parametrosPropiedadValores),dinamico.getIndicador().getIdServicio().longValue(), dinamico.getUsuario().getUsuariosWsg().getIdUsuario(),dinamico.getUsuario().getUsuariosWsg().getClave());
@@ -93,9 +96,18 @@ public class LineView implements Serializable {
 										.procesaDatosDeGraficos(servicio
 												.get_any());
 							}
+							mensajeDeAplicacion =    catalogo.obtenerMensajeDeErrorPorNombrePropiedad(servicio.getProveedorBase(), servicio.getCodigoError());
+							codigoDeAplicacion = servicio.getCodigoError();
+						}else{
+							mensajeDeAplicacion =    "El servicio web al que accesa la aplicacion no está disponible, intentelo mas tarde, o póngase en contacto con sistemas";
+							codigoDeAplicacion = -10;
 						}
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
+					}catch(NumberFormatException nfe){
+						mensajeDeAplicacion =    "Se esperaba en la segunda columna de la sentencia un valor numério y se ha obtenido caracter, revise la consulta";
+						codigoDeAplicacion = -11;
+					}catch (Exception e) {
+						mensajeDeAplicacion =    "Ha ocurrido algun error inesperado, comuníquese con sistemas";
+						codigoDeAplicacion = -12;
 						e.printStackTrace();
 					}
 					// setear cada serie
@@ -120,5 +132,15 @@ public class LineView implements Serializable {
 	public void setDinamico(Dinamico dinamico) {
 		this.dinamico = dinamico;
 	}
+
+	public String getMensajeDeAplicacion() {
+		return mensajeDeAplicacion;
+	}
+
+	public int getCodigoDeAplicacion() {
+		return codigoDeAplicacion;
+	}
+	
+	
 
 }

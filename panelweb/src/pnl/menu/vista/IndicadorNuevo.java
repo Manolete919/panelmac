@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import pnl.filtro.dinamico.FiltroValorDefault;
+import pnl.graficos.CatalogoError;
 import pnl.interfaz.GrupoIndicadorBeanRemote;
 import pnl.interfaz.ModeloGraficoBeanRemote;
 import pnl.interfaz.UsuarioGrupoBeanRemote;
@@ -37,6 +38,7 @@ import pnl.modelo.ModeloGrafico;
 import pnl.modelo.Usuario;
 import pnl.modelo.GrupoIndicador;
 import pnl.modelo.UsuarioGrupo;
+import pnl.servicio.RegistraLog;
 import pnl.servicio.Tema;
 import pnl.servicio.UsuarioServicio;
 import pnl.webservice.integracion.ConsultaGenerico;
@@ -78,12 +80,19 @@ public class IndicadorNuevo implements Serializable {
 	List<Grupo> gruposSource;
 	List<Grupo> gruposTarget;
 	
+	CatalogoError catalogo = new CatalogoError();
+	private String mensajeDeAplicacion = "";
+	private int codigoDeAplicacion = 0;
+	
 
 	@ManagedProperty("#{usuarioServicio}")
 	private UsuarioServicio usuarioServicio;
 
 	@ManagedProperty("#{menuVista}")
 	private MenuVista menuVista;
+	
+	@ManagedProperty("#{registraLog}")
+	private RegistraLog registraLog;
 	
 	
 	@ManagedProperty("#{tema}")
@@ -118,16 +127,11 @@ public class IndicadorNuevo implements Serializable {
 
 			InitialContext ic = new InitialContext(pr);
 
-			grupoIndicadorBeanRemote = (GrupoIndicadorBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/GrupoIndicadorBean");
+			grupoIndicadorBeanRemote = (GrupoIndicadorBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/GrupoIndicadorBean");
 
-			modeloGraficoBeanRemote = (ModeloGraficoBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/ModeloGraficoBean");
+			modeloGraficoBeanRemote = (ModeloGraficoBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/ModeloGraficoBean");
 
-			
-
-			usuarioGrupoBeanRemote = (UsuarioGrupoBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/UsuarioGrupoBean");
+			usuarioGrupoBeanRemote = (UsuarioGrupoBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/UsuarioGrupoBean");
 
 			
 		} catch (Exception e) {
@@ -145,6 +149,13 @@ public class IndicadorNuevo implements Serializable {
 				if(servicio.get_any() != null ){					
 					wsgServicios = cg.procesaDatosServiciosDeUsuario(servicio.get_any());
 				}
+				mensajeDeAplicacion =    catalogo.obtenerMensajeDeErrorPorNombrePropiedad(servicio.getProveedorBase(), servicio.getCodigoError());
+				codigoDeAplicacion = servicio.getCodigoError();	
+
+				
+			}else{
+				mensajeDeAplicacion =    "El servicio web al que accesa la aplicacion no está disponible, intentelo mas tarde, o póngase en contacto con sistemas";
+				codigoDeAplicacion = -10;
 			}
 			usuarioGrupos = usuarioGrupoBeanRemote.obtenerGruposPorIdUSuarioEstado(usuario.getIdUsuario(),"A");
 		
@@ -233,6 +244,10 @@ public class IndicadorNuevo implements Serializable {
 				try {
 
 					grupoIndicadorBeanRemote.persistGrupoIndicadores(grupoIndicadores);
+					
+					List<Indicador> detalles = new ArrayList<Indicador>();
+					detalles.add(indicador);
+					registraLog.registrarLog(detalles, RegistraLog.ACCION_CREAR, RegistraLog.RECURSO_INDICADOR);
 
 					// ACTUALIZAR MENU
 
@@ -433,6 +448,27 @@ public class IndicadorNuevo implements Serializable {
 		this.tema = tema;
 	}
 	
+	public void setRegistraLog(RegistraLog registraLog) {
+		this.registraLog = registraLog;
+	}
 
+	public String getMensajeDeAplicacion() {
+		return mensajeDeAplicacion;
+	}
+
+	public void setMensajeDeAplicacion(String mensajeDeAplicacion) {
+		this.mensajeDeAplicacion = mensajeDeAplicacion;
+	}
+
+	public int getCodigoDeAplicacion() {
+		return codigoDeAplicacion;
+	}
+
+	public void setCodigoDeAplicacion(int codigoDeAplicacion) {
+		this.codigoDeAplicacion = codigoDeAplicacion;
+	}
+	
+	
+	
 
 }

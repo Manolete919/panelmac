@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import pnl.filtro.dinamico.FiltroValorDefault;
+import pnl.graficos.CatalogoError;
 import pnl.interfaz.GrupoIndicadorBeanRemote;
 import pnl.interfaz.IndicadorBeanRemote;
 import pnl.interfaz.ModeloGraficoBeanRemote;
@@ -37,6 +38,7 @@ import pnl.modelo.ModeloGrafico;
 import pnl.modelo.Usuario;
 import pnl.modelo.GrupoIndicador;
 import pnl.modelo.UsuarioGrupo;
+import pnl.servicio.RegistraLog;
 import pnl.servicio.UsuarioServicio;
 import pnl.webservice.integracion.ConsultaGenerico;
 import pnl.webservice.integracion.Utileria;
@@ -82,6 +84,13 @@ public class IndicadorEditar implements Serializable{
 	@ManagedProperty("#{menuVista}")
 	private MenuVista menuVista;
 	
+	@ManagedProperty("#{registraLog}")
+	private RegistraLog registraLog;
+	
+	CatalogoError catalogo = new CatalogoError();
+	private String mensajeDeAplicacion = "";
+	private int codigoDeAplicacion = 0;
+	
 	
 	
 	@PostConstruct
@@ -107,8 +116,7 @@ public class IndicadorEditar implements Serializable{
 			
 			modeloGraficoBeanRemote = (ModeloGraficoBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/ModeloGraficoBean");
 			
-			usuarioGrupoBeanRemote = (UsuarioGrupoBeanRemote) ic
-					.lookup("java:global.panel_ear.panel_ejb/UsuarioGrupoBean");
+			usuarioGrupoBeanRemote = (UsuarioGrupoBeanRemote) ic.lookup("java:global.panel_ear.panel_ejb/UsuarioGrupoBean");
 			
 			modeloGraficos = modeloGraficoBeanRemote.getModeloGraficoFindAll();
 			
@@ -116,13 +124,21 @@ public class IndicadorEditar implements Serializable{
 			
 			filtroValores.add(new FiltroValorDefault(null,usuario.getIdUsuario()));
 			
-			Servicio servicio  = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(2), usuario.getIdUsuario(), usuario.getClave());	
+			Servicio servicio  = cg.consultarServicioWebGenerico(u.convertirFiltroValorEnDocument(filtroValores), new Long(2), usuario.getUsuariosWsg().getIdUsuario(), usuario.getUsuariosWsg().getClave());	
 			wsgServicios = new ArrayList<WsgServicio>();
 			if(servicio != null ){
 				if(servicio.get_any() != null ){					
 					wsgServicios = cg.procesaDatosServiciosDeUsuario(servicio.get_any());
 				}
+				mensajeDeAplicacion =    catalogo.obtenerMensajeDeErrorPorNombrePropiedad(servicio.getProveedorBase(), servicio.getCodigoError());
+				codigoDeAplicacion = servicio.getCodigoError();	
+
+				
+			}else{
+				mensajeDeAplicacion =    "El servicio web al que accesa la aplicacion no está disponible, intentelo mas tarde, o póngase en contacto con sistemas";
+				codigoDeAplicacion = -10;
 			}
+
 			
 			
 
@@ -152,7 +168,7 @@ public class IndicadorEditar implements Serializable{
 			indicadorGrupos = grupoIndicadorBeanRemote.obtieneIndicadorGruposPorIdIndicador(idIndicador);
 		
 			if(!indicadorGrupos.isEmpty()){
-				indicador = indicadorGrupos.get(0).getIndicador();
+				indicador = indicadorGrupos.get(0).getIndicador();				
 			}
 			
 		
@@ -315,8 +331,19 @@ public class IndicadorEditar implements Serializable{
 	    			
 	    			grupoIndicadorBeanRemote.removeGrupoIndicadores(grupoEliminacionIndicadores);
 	        		
+	    			//registrar el log primero, para poder consultar antes de actualizar
+	    			
+	           		List<Indicador> detalles = new ArrayList<Indicador>();
+
+	           		detalles.add(indicador);
+	           		
+	         		registraLog.registrarLog(detalles, RegistraLog.ACCION_EDITAR, RegistraLog.RECURSO_INDICADOR);
+
+	    			
 	    			
 	    			indicadorBeanRemote.mergeIndicador(this.getIndicador());
+	    			
+
 	    				    			
 	    			
 	                addMessage("Los datos fueron actualizados exitosamente!!",FacesMessage.SEVERITY_INFO);
@@ -506,6 +533,26 @@ public class IndicadorEditar implements Serializable{
 
 	public void setGrupos(DualListModel<Grupo> grupos) {
 		this.grupos = grupos;
+	}
+
+	public void setRegistraLog(RegistraLog registraLog) {
+		this.registraLog = registraLog;
+	}
+
+	public String getMensajeDeAplicacion() {
+		return mensajeDeAplicacion;
+	}
+
+	public void setMensajeDeAplicacion(String mensajeDeAplicacion) {
+		this.mensajeDeAplicacion = mensajeDeAplicacion;
+	}
+
+	public int getCodigoDeAplicacion() {
+		return codigoDeAplicacion;
+	}
+
+	public void setCodigoDeAplicacion(int codigoDeAplicacion) {
+		this.codigoDeAplicacion = codigoDeAplicacion;
 	}
     
 	

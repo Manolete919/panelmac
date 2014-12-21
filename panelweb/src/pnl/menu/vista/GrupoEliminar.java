@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import pnl.interfaz.GrupoBeanRemote;
 import pnl.interfaz.UsuarioGrupoBeanRemote;
 import pnl.modelo.Usuario;
@@ -41,6 +40,9 @@ public class GrupoEliminar implements Serializable {
 	private UsuarioGrupoBeanRemote usuarioGrupoBeanRemote;
 	private GrupoBeanRemote grupoBeanRemote;
 	private Usuario usuario;
+	
+	
+
 
 	@ManagedProperty("#{usuarioServicio}")
 	private UsuarioServicio usuarioServicio;
