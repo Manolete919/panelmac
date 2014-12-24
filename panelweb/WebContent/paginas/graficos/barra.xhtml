@@ -12,6 +12,7 @@
 	</ui:define>
 
 	<ui:define name="content" >
+	<c:if test="#{menuVista.indicador.idIndicador != 0}">
 		<p:outputLabel rendered="#{areaView.codigoDeAplicacion != -38170 }"
 			style="color:green;font-size:15px;font-weight:bold"
 			value="Aviso: " />
@@ -25,7 +26,7 @@
 			</p:scrollPanel>
 		</p:panel>
 			
-		
+		</c:if>
 			
 	</ui:define>
 
